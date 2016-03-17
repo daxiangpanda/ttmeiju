@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 import random
 import urllib
 import urllib2
+import sys
 def url_open(url):
     req = urllib2.Request(url)
     header1 = 'Mozilla/5.0 (iPhone; U; CPU iPhone OS 4_2_1 like Mac OS X; en-us) AppleWebKit/533.17.9 (KHTML, like Gecko) Version/5.0.2 Mobile/8C148 Safari/6533.18.5'
@@ -57,6 +58,7 @@ def find_link_teleplay(name,baselink):
     # soup = BeautifulSoup(url_open(link))
     res = []
     while True:
+        # print page
         link = baselink + '?page='+str(page)
         soup = BeautifulSoup(url_open(link), "html.parser")
         result_tags = soup.find_all('tr',class_ = 'Scontent')
@@ -73,18 +75,25 @@ def find_link_teleplay(name,baselink):
                 size = info[3].string
                 format = info[4].string
                 res.append([namel,link,size,format])
-                page+=1
+            page+=1
 
-def store()
+def store(name_res,list_res):
+    f = open(name_res.decode('utf-8')+'.txt','w')
+    for i in list_res:
+        for ii in i:
+            f.write(str(ii))
+        f.write('\n')
 
 
 # print find_link_teleplay(u'无耻','http://www.ttmeiju.com/meiju/Shameless.html')
 
 if __name__ == '__main__':
+    reload(sys)
+    sys.setdefaultencoding('utf8')
     while True:
         name = (raw_input(u'请输入需要下载的美剧名称'))
         if name == '':
-            name = '电影'
+            name = r'电影'
         soup = BeautifulSoup(urllib.urlopen(url_make(name.decode('utf-8').encode('gbk'))).read(),"html.parser")
         n = 0
         for i in soup.find_all('table',class_ = 'seedtable'):
@@ -93,6 +102,7 @@ if __name__ == '__main__':
                 print '找到第%s条记录'%n
                 info_tele = process_soup_teleplay(ii)
                 print info_tele
-                print find_link_teleplay(info_tele[0],info_tele[1])
-                print
+                list_res = find_link_teleplay(info_tele[0],info_tele[1])
+                print list_res
+                store(name,list_res)
                 print
