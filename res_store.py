@@ -42,6 +42,9 @@ def close_all(conn, cu):
 
 def create_table(conn,name_table):
     '''创建数据库表'''
+    if name_table[0].isdigit():
+        name_table = 'num'+name_table
+    print name_table
     if name_table is not None and name_table != '':
         cu = get_cursor(conn)
         print('创建表%s'.decode('utf-8')%name_table)
@@ -62,6 +65,7 @@ def save(conn,table,data):
     '''插入数据'''
     conn.text_factory = str
     sql = '''INSERT INTO %s values (?, ?, ?, ?)'''%table
+    print sql
     if sql is not None and sql != '':
         if data is not None:
             cu = get_cursor(conn)
@@ -87,6 +91,7 @@ conn = get_conn(path)
 # create_table(conn,u'无耻1')
 database_isexist(conn,'s')
 def tosql(name):
+    print 1
     print name
     data = pickle.load(file(name,'r'))
     name = name.split('.')[0]

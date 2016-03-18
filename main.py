@@ -117,6 +117,7 @@ if __name__ == '__main__':
     # name = (raw_input(u'请输入需要下载的美剧名称'))
     namelist = pickle.load(file(u'美剧列表.txt','r'))
     for name in namelist:
+        print name
         soup = BeautifulSoup(urllib.urlopen(url_make(name.decode('utf-8').encode('gbk'))).read(),"html.parser")
         n = 0
         for i in soup.find_all('table',class_ = 'seedtable'):
@@ -136,6 +137,6 @@ if __name__ == '__main__':
                         f.write(pickle.dumps(list_res))
                     store(name,list_res)
                     print
-            print 'inserting into sqlite3'
-            res_store.tosql(name.decode('utf-8')+'.pick')
-            print 'insert complete'
+                    print 'inserting into sqlite3'
+                    res_store.tosql(name.decode('utf-8')+'.pick')
+                    print 'insert complete'
