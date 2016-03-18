@@ -5,6 +5,8 @@ import random
 import urllib
 import urllib2
 import sys
+import cPickle as pickle
+import res_store
 def url_open(url):
     req = urllib2.Request(url)
     header1 = 'Mozilla/5.0 (iPhone; U; CPU iPhone OS 4_2_1 like Mac OS X; en-us) AppleWebKit/533.17.9 (KHTML, like Gecko) Version/5.0.2 Mobile/8C148 Safari/6533.18.5'
@@ -69,9 +71,10 @@ def find_link_teleplay(name,baselink):
             for i in result_tags:
                 info = i.find_all('td')
                 namel = info[1].find('a').string
-                link = []
+                link = ''
                 for ii in info[2].find_all('a'):
-                    link.append([ii['title'],ii['href']])
+                    link+=(ii['title']+':'+ii['href'])
+                    # link[ii['title']] = ii['href']
                 size = info[3].string
                 format = info[4].string
                 res.append([namel,link,size,format])
@@ -90,19 +93,49 @@ def store(name_res,list_res):
 if __name__ == '__main__':
     reload(sys)
     sys.setdefaultencoding('utf8')
-    while True:
-        name = (raw_input(u'请输入需要下载的美剧名称'))
-        if name == '':
-            name = r'电影'
+    # while True:
+    #     name = (raw_input(u'请输入需要下载的美剧名称'))
+    #     if name == '':
+    #         name = r'无耻家庭'
+    #     soup = BeautifulSoup(urllib.urlopen(url_make(name.decode('utf-8').encode('gbk'))).read(),"html.parser")
+    #     n = 0
+    #     for i in soup.find_all('table',class_ = 'seedtable'):
+    #         for ii in i.find_all('tr',bgcolor="#ffffff"):
+    #             n+=1
+    #             print '找到第%s条记录'%n
+    #             info_tele = process_soup_teleplay(ii)
+    #             print info_tele
+    #             list_res = find_link_teleplay(info_tele[0],info_tele[1])
+    #             print list_res
+    #             with open(name.decode('utf-8')+'.pick','w') as f:
+    #                 f.write(pickle.dumps(list_res))
+    #             store(name,list_res)
+    #             print
+    #     print 'inserting into sqlite3'
+    #     res_store.tosql(name.decode('utf-8')+'.pick')
+    #     print 'insert complete'
+    # name = (raw_input(u'请输入需要下载的美剧名称'))
+    namelist = pickle.load(file(u'美剧列表.txt','r'))
+    for name in namelist:
         soup = BeautifulSoup(urllib.urlopen(url_make(name.decode('utf-8').encode('gbk'))).read(),"html.parser")
         n = 0
         for i in soup.find_all('table',class_ = 'seedtable'):
-            for ii in i.find_all('tr',bgcolor="#ffffff"):
-                n+=1
-                print '找到第%s条记录'%n
-                info_tele = process_soup_teleplay(ii)
-                print info_tele
-                list_res = find_link_teleplay(info_tele[0],info_tele[1])
-                print list_res
-                store(name,list_res)
-                print
+            list_res = i.find_all('tr',bgcolor="#ffffff")
+            if len(list_res) == 0:
+                print u'未搜索到%s'%name
+                break
+            else:
+                for ii in i.find_all('tr',bgcolor="#ffffff"):
+                    n+=1
+                    print '找到第%s条记录'%n
+                    info_tele = process_soup_teleplay(ii)
+                    print info_tele
+                    list_res = find_link_teleplay(info_tele[0],info_tele[1])
+                    print list_res
+                    with open(name.decode('utf-8')+'.pick','w') as f:
+                        f.write(pickle.dumps(list_res))
+                    store(name,list_res)
+                    print
+            print 'inserting into sqlite3'
+            res_store.tosql(name.decode('utf-8')+'.pick')
+            print 'insert complete'
