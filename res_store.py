@@ -14,11 +14,11 @@ def get_conn(path):
     连接对象'''
     conn = sqlite3.connect(path)
     if os.path.exists(path) and os.path.isfile(path):
-        print('硬盘上面:[{}]'.format(path))
+        # print('硬盘上面:[{}]'.format(path))
         return conn
     else:
         conn = None
-        print('内存上面:[:memory:]')
+        # print('内存上面:[:memory:]')
         return sqlite3.connect(':memory:')
 
 
@@ -117,10 +117,10 @@ conn = get_conn(path)
 # create_table(conn,u'无耻1')
 database_isexist(conn,'s')
 
-if __name__ == '__main__':
-    tosql(u'1无耻家庭.pick')
-with open(u'1无耻家庭.pick','r') as f:
-    result = f.read()
+# if __name__ == '__main__':
+#     tosql(u'1无耻家庭.pick')
+# with open(u'1无耻家庭.pick','r') as f:
+#     result = f.read()
 
 # for i in pickle.loads(result):
 #     name = i[0]

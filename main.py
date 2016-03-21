@@ -37,7 +37,7 @@ def url_open(url):
 def url_make(name):
     baseurl = 'http://www.ttmeiju.com/search.php?keyword='
     res = ','
-    print len(name)
+    # print len(name)
     for i in range(0,len(name),2):
         res+=name[i:i+2]
         res+=','
@@ -87,9 +87,15 @@ def store(name_res,list_res):
             f.write(str(ii))
         f.write('\n')
 
-
+def find_list():
+    url = 'http://www.ttmeiju.com/summary.html'
+    soup = BeautifulSoup(url_open(url))
+    res = []
+    for i in soup.find_all('tr',bgcolor = '#ffffff'):
+        res.append(i.find('a').string.split(' ')[0])
+    return res
 # print find_link_teleplay(u'无耻','http://www.ttmeiju.com/meiju/Shameless.html')
-
+# print find_list()
 if __name__ == '__main__':
     reload(sys)
     sys.setdefaultencoding('utf8')
@@ -115,7 +121,7 @@ if __name__ == '__main__':
     #     res_store.tosql(name.decode('utf-8')+'.pick')
     #     print 'insert complete'
     # name = (raw_input(u'请输入需要下载的美剧名称'))
-    namelist = pickle.load(file(u'美剧列表.txt','r'))
+    namelist = find_list()
     for name in namelist:
         print name
         soup = BeautifulSoup(urllib.urlopen(url_make(name.decode('utf-8').encode('gbk'))).read(),"html.parser")
