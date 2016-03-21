@@ -54,6 +54,7 @@ def create_table(conn,name_table):
                           `size` varchar(100) DEFAULT NULL,
                           `format` varchar(100) DEFAULT NULL
                         )''' %name_table
+        print sql
         cu.execute(sql)
         conn.commit()
         print('创建数据库表%s成功!'.decode('utf-8')%name_table)
@@ -95,9 +96,9 @@ def tosql(name):
     print name
     data = pickle.load(file(name,'r'))
     name = name.split('.')[0]
-    if database_isexist(conn,name):
-        pass
-    else:
+    # print database_isexist(conn,'num24小时'.decode('utf-8'))
+    print database_isexist(conn,name)
+    if not database_isexist(conn,name):
         create_table(conn,name)
     save(conn,name,data)
 
