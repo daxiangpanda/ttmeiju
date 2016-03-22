@@ -66,6 +66,7 @@ def create_table(conn,name_table):
 
 def save(conn,table,data):
     '''插入数据'''
+    print table
     conn.text_factory = str
     sql = '''INSERT INTO %s values (?, ?, ?, ?)'''%table
     print sql

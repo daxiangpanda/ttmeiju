@@ -99,6 +99,7 @@ def find_list():
 if __name__ == '__main__':
     reload(sys)
     sys.setdefaultencoding('utf8')
+    time.clock()
     # while True:
     #     name = (raw_input(u'请输入需要下载的美剧名称'))
     #     if name == '':
@@ -146,3 +147,4 @@ if __name__ == '__main__':
                     print 'inserting into sqlite3'
                     res_store.tosql(name.decode('utf-8')+'.pick')
                     print 'insert complete'
+    print time.clock()
